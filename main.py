@@ -3,6 +3,27 @@ import sqlite3
 
 app = Flask(__name__)
 
+import os
+import requests
+
+db_url = "https://www.dropbox.com/scl/fi/1ikhm2muo220tmhlt1tk4/movies.db?rlkey=tr7lo6dhh316qnstog5uzl528&st=spv9frtn&dl=1"
+db_path = "movies.db"
+
+def download_db():
+    if not os.path.exists(db_path):
+        print("Downloading movies.db from Dropbox...")
+        response = requests.get(db_url)
+        with open(db_path, "wb") as f:
+            f.write(response.content)
+        print("Download complete.")
+    else:
+        print("movies.db already exists, skipping download.")
+
+download_db()
+
+
+
+
 @app.route('/all')
 def get_paginated_data():
     page = int(request.args.get('page', 1))
